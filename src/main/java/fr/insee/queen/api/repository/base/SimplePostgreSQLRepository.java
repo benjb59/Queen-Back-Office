@@ -1,8 +1,7 @@
 package fr.insee.queen.api.repository.base;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import fr.insee.queen.api.domain.StateData;
-import org.json.simple.JSONObject;
+import fr.insee.queen.api.repository.SimpleApiRepository;
 import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -13,23 +12,27 @@ import java.sql.SQLException;
 
 @Service
 @ConditionalOnProperty(prefix = "fr.insee.queen.application", name = "persistenceType", havingValue = "JPA", matchIfMissing = true)
-public class SimplePostgreSQLRepository {
+public class SimplePostgreSQLRepository implements SimpleApiRepository {
 
     @Autowired
     JdbcTemplate jdbcTemplate;
 
+    @Override
     public void updateSurveyUnitData(String id, JsonNode data) {
         updateJsonValueOfSurveyUnit("data",id,data);
     }
 
+    @Override
     public void updateSurveyUnitComment(String id, JsonNode comment)  {
         updateJsonValueOfSurveyUnit("comment",id,comment);
     }
 
+    @Override
     public void updateSurveyUnitPersonalization(String id, JsonNode personalization) {
         updateJsonValueOfSurveyUnit("personalization",id, personalization);
     }
 
+    @Override
     public void updateSurveyUnitStateDate(String id, JsonNode stateData){
         Long date = stateData.get("date").longValue();
         String state = stateData.get("state").textValue();

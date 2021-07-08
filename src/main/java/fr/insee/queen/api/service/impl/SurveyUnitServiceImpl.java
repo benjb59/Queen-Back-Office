@@ -18,7 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fr.insee.queen.api.repository.base.SimplePostgreSQLRepository;
+import fr.insee.queen.api.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,12 +42,6 @@ import fr.insee.queen.api.dto.surveyunit.SurveyUnitDto;
 import fr.insee.queen.api.dto.surveyunit.SurveyUnitResponseDto;
 import fr.insee.queen.api.exception.BadRequestException;
 import fr.insee.queen.api.pdfutils.ExportPdf;
-import fr.insee.queen.api.repository.ApiRepository;
-import fr.insee.queen.api.repository.CommentRepository;
-import fr.insee.queen.api.repository.DataRepository;
-import fr.insee.queen.api.repository.PersonalizationRepository;
-import fr.insee.queen.api.repository.StateDataRepository;
-import fr.insee.queen.api.repository.SurveyUnitRepository;
 import fr.insee.queen.api.service.AbstractService;
 import fr.insee.queen.api.service.CampaignService;
 import fr.insee.queen.api.service.CommentService;
@@ -64,9 +58,6 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 	private static final Logger LOGGER = LoggerFactory.getLogger(SurveyUnitServiceImpl.class);
 
 	protected final SurveyUnitRepository surveyUnitRepository;
-
-	@Autowired(required = false)
-	private SimplePostgreSQLRepository sqlRepository;
 
 	@Autowired
 	private StateDataService stateDataService;
@@ -85,6 +76,9 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 
 	@Autowired
 	private CampaignService campaignService;
+
+	@Autowired(required = false)
+	private SimpleApiRepository simpleApiRepository;
 
 	@Autowired
 	private StateDataRepository stateDataRepository;
@@ -160,20 +154,22 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 
 	@Override
 	public void updateSurveyUnitImproved(String id, JsonNode surveyUnit) {
-		if(sqlRepository!=null){
+		if(simpleApiRepository!=null){
+			LOGGER.info("Method without hibernate");
 			if(surveyUnit.get("personalization") != null) {
-				sqlRepository.updateSurveyUnitPersonalization(id,surveyUnit.get("personalization"));
+				simpleApiRepository.updateSurveyUnitPersonalization(id,surveyUnit.get("personalization"));
 			}
 			if(surveyUnit.get("comment") != null) {
-				sqlRepository.updateSurveyUnitComment(id,surveyUnit.get("comment"));
+				simpleApiRepository.updateSurveyUnitComment(id,surveyUnit.get("comment"));
 			}
 			if(surveyUnit.get("data") != null) {
-				sqlRepository.updateSurveyUnitData(id,surveyUnit.get("data"));
+				simpleApiRepository.updateSurveyUnitData(id,surveyUnit.get("data"));
 			}
 			if(surveyUnit.get("stateData") != null) {
-				sqlRepository.updateSurveyUnitStateDate(id,surveyUnit.get("stateData"));
+				simpleApiRepository.updateSurveyUnitStateDate(id,surveyUnit.get("stateData"));
 			}
 		} else {
+			LOGGER.info("Method with hibernate");
 			// if sqlRepo is null, use classic method
 			Optional<SurveyUnit> su = findById(id);
 			updateSurveyUnit(su.get(),surveyUnit);
