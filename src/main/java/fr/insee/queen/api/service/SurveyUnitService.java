@@ -42,6 +42,7 @@ public interface SurveyUnitService extends BaseService<SurveyUnit, String> {
 
 	void createSurveyUnit(SurveyUnitResponseDto su, Campaign campaign, QuestionnaireModel questionnaireModel);
 	HttpStatus postSurveyUnit(String id, SurveyUnitResponseDto su);
+	HttpStatus postSurveyUnitImproved(String id, SurveyUnitResponseDto su);
 
 	Iterable<SurveyUnit> findByIds(List<String> lstSurveyUnitId);
 	

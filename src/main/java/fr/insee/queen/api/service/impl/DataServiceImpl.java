@@ -4,8 +4,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import fr.insee.queen.api.repository.base.SimplePostgreSQLRepository;
+import fr.insee.queen.api.repository.SimpleApiRepository;
 import fr.insee.queen.api.service.SurveyUnitService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +20,15 @@ import fr.insee.queen.api.service.DataService;
 
 @Service
 public class DataServiceImpl extends AbstractService<Data, UUID> implements DataService {
-
-	@Autowired(required = false)
-	private SimplePostgreSQLRepository sqlRepository;
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataServiceImpl.class);
 
 	@Autowired
 	public SurveyUnitService surveyUnitService;
 
     protected final DataRepository dataRepository;
+
+	@Autowired(required = false)
+	private SimpleApiRepository simpleApiRepository;
 
     @Autowired
     public DataServiceImpl(DataRepository repository) {
@@ -64,10 +67,12 @@ public class DataServiceImpl extends AbstractService<Data, UUID> implements Data
 
 	@Override
 	public void updateDataImproved(String id, JsonNode dataValue) {
-		if(sqlRepository != null){
-			sqlRepository.updateSurveyUnitData(id, dataValue);
+		if(simpleApiRepository != null){
+			LOGGER.info("Method without hibernate");
+			simpleApiRepository.updateSurveyUnitData(id, dataValue);
 		}
 		else {
+			LOGGER.info("Method with hibernate");
 			Optional<SurveyUnit> su = surveyUnitService.findById(id);
 			updateData(su.get(),dataValue);
 		}

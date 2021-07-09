@@ -217,6 +217,22 @@ public class SurveyUnitController {
 	* @param id the id of campaign
 	* @return List of {@link String} containing nomenclature ids
 	*/
+	@ApiOperation(value = "Post survey-unit improved")
+	@PostMapping(path = "/campaign/{id}/survey-unit/better")
+	public ResponseEntity<Object> postSurveyUnitImproved(@RequestBody SurveyUnitResponseDto su, @PathVariable(value = "id") String id){
+		if(!utilsService.isDevProfile() && !utilsService.isTestProfile()) {
+			return ResponseEntity.notFound().build();
+		}
+		HttpStatus status = surveyUnitService.postSurveyUnitImproved(id, su);
+		return new ResponseEntity<>(status);
+	}
+
+	/**
+	 * This method is using to create a survey-unit
+	 *
+	 * @param id the id of campaign
+	 * @return List of {@link String} containing nomenclature ids
+	 */
 	@ApiOperation(value = "Post survey-unit")
 	@PostMapping(path = "/campaign/{id}/survey-unit")
 	public ResponseEntity<Object> postSurveyUnit(@RequestBody SurveyUnitResponseDto su, @PathVariable(value = "id") String id){
