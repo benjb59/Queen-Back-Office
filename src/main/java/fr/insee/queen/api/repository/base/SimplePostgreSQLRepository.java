@@ -47,8 +47,13 @@ public class SimplePostgreSQLRepository implements SimpleApiRepository {
 
     @Override
     public void createSurveyUnit(String campaignId, SurveyUnitResponseDto surveyUnitResponseDto) {
-        String su = "INSERT INTO survey_unit (id, campaign_id, questionnaire_model_id) VALUES (?,?,?)";
-        int result = jdbcTemplate.update(su,surveyUnitResponseDto.getId(),campaignId, surveyUnitResponseDto.getQuestionnaireId());
+        String su ="INSERT INTO survey_unit (id, campaign_id, questionnaire_model_id)\n" +
+                "VALUES (?,?,?)\n" +
+                "ON CONFLICT (id) DO UPDATE SET campaign_id=?, questionnaire_model_id=?";
+        jdbcTemplate.update(su,
+                surveyUnitResponseDto.getId(),
+                campaignId, surveyUnitResponseDto.getQuestionnaireId(),
+                campaignId, surveyUnitResponseDto.getQuestionnaireId());
 
         insertJsonValueOfSurveyUnit("data",surveyUnitResponseDto.getId(),surveyUnitResponseDto.getData());
         insertJsonValueOfSurveyUnit("comment",surveyUnitResponseDto.getId(),surveyUnitResponseDto.getComment());
