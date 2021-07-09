@@ -1,6 +1,8 @@
 package fr.insee.queen.api.repository.base;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import fr.insee.queen.api.dto.statedata.StateDataDto;
+import fr.insee.queen.api.dto.surveyunit.SurveyUnitResponseDto;
 import fr.insee.queen.api.repository.SimpleApiRepository;
 import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 @Service
 @ConditionalOnProperty(prefix = "fr.insee.queen.application", name = "persistenceType", havingValue = "JPA", matchIfMissing = true)
@@ -42,7 +45,39 @@ public class SimplePostgreSQLRepository implements SimpleApiRepository {
         jdbcTemplate.update(qString,currentPage,date,state,id);
     }
 
-    private void updateJsonValueOfSurveyUnit(String table, String id, JsonNode jsonValue) {
+    @Override
+    public void createSurveyUnit(String campaignId, SurveyUnitResponseDto surveyUnitResponseDto) {
+        String su = "INSERT INTO survey_unit (id, campaign_id, questionnaire_model_id) VALUES (?,?,?)";
+        int result = jdbcTemplate.update(su,surveyUnitResponseDto.getId(),campaignId, surveyUnitResponseDto.getQuestionnaireId());
+
+        insertJsonValueOfSurveyUnit("data",surveyUnitResponseDto.getId(),surveyUnitResponseDto.getData());
+        insertJsonValueOfSurveyUnit("comment",surveyUnitResponseDto.getId(),surveyUnitResponseDto.getComment());
+        insertJsonValueOfSurveyUnit("personalization",surveyUnitResponseDto.getId(),surveyUnitResponseDto.getPersonalization());
+        insertSurveyUnitStateDate(surveyUnitResponseDto.getId(),surveyUnitResponseDto.getStateData());
+    }
+
+    private void insertSurveyUnitStateDate(String surveyUnitId, StateDataDto stateData){
+        Long date = stateData.getDate();
+        String state = stateData.getState().name();
+        String currentPage = stateData.getCurrentPage();
+        String qString = "INSERT INTO state_data (id,current_page,date,state,survey_unit_id) VALUES (?,?,?,?,?)";
+        jdbcTemplate.update(qString,UUID.randomUUID(),currentPage,date,state,surveyUnitId);
+    }
+
+    private void insertJsonValueOfSurveyUnit(String table, String surveyUnitId, JsonNode jsonValue){
+        String qString = String.format("INSERT INTO %s (id, value, survey_unit_id) VALUES (?,?,?)",table);
+        PGobject json = new PGobject();
+        json.setType("json");
+        try {
+            json.setValue(jsonValue.toString());
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        jdbcTemplate.update(qString,UUID.randomUUID(),json,surveyUnitId);
+    }
+
+
+    private void updateJsonValueOfSurveyUnit(String table, String surveyUnitId, JsonNode jsonValue) {
         String qString = String.format("UPDATE %s SET value=? WHERE survey_unit_id=?",table);
         PGobject q = new PGobject();
         q.setType("json");
@@ -51,6 +86,6 @@ public class SimplePostgreSQLRepository implements SimpleApiRepository {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        jdbcTemplate.update(qString, q, id);
+        jdbcTemplate.update(qString, q, surveyUnitId);
     }
 }

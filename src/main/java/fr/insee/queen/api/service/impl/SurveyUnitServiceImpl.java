@@ -174,10 +174,7 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 			Optional<SurveyUnit> su = findById(id);
 			updateSurveyUnit(su.get(),surveyUnit);
 		}
-
-
 	}
-
 
 	private void updateStateData(SurveyUnit newSU, JsonNode surveyUnit) {
 		JsonNode statedata = surveyUnit.get("stateData");
@@ -301,6 +298,7 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 
 	}
 
+	@Override
 	public HttpStatus postSurveyUnit(String id, SurveyUnitResponseDto su) {
 		Optional<Campaign> campaignOptional = campaignService.findById(id);
 		if (!campaignOptional.isPresent()) {
@@ -324,6 +322,18 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 		createSurveyUnit(su, campaignOptional.get(), questionnaireModelOptional.get());
 		return HttpStatus.OK;
 	}
+
+	@Override
+	public HttpStatus postSurveyUnitImproved(String id, SurveyUnitResponseDto su) {
+		try{
+			// TODO check if campaign or questionnaire exist
+			simpleApiRepository.createSurveyUnit(id,su);
+			return HttpStatus.OK;
+		}catch (Exception e){
+			return HttpStatus.BAD_REQUEST;
+		}
+	}
+
 
 	@Override
 	public void createSurveyUnit(SurveyUnitResponseDto su, Campaign campaign, QuestionnaireModel questionnaire) {
