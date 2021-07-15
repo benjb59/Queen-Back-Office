@@ -229,7 +229,7 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 	public File generateDepositProof(SurveyUnit su, String userId) throws Exception {
 		String campaignLabel = su.getCampaign().getLabel();
 		String date = "";
-		if(su.getStateData().getState().equals(StateDataType.EXTRACTED)) {
+		if(su.getStateData().getState().equals(StateDataType.VALIDATED)) {
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy à HH:mm");
 			date = dateFormat.format(new Date(su.getStateData().getDate()));
 		}

@@ -31,7 +31,7 @@ public class XslTransformation {
         tFactory.setURIResolver(new ClasspathURIResolver());
         Transformer transformer = tFactory.newTransformer(new StreamSource(xslSheet));
         transformer.setURIResolver(new ClasspathURIResolver());
-        transformer.setParameter(XslParameters.CAMPAIGN_LABEL, idec);
+        transformer.setParameter(XslParameters.SURVEY_UNIT_ID, idec);
         transformer.setParameter(XslParameters.TITRE, campaignLabel);
         transformer.setParameter(XslParameters.DATE, date);
         transformer.transform(new StreamSource(input), new StreamResult(outputStream));
