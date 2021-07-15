@@ -166,7 +166,7 @@ public class SurveyUnitController {
 	
 	@ApiOperation(value = "Get deposit proof for a SU ")
 	@GetMapping(value = "/survey-unit/{id}/deposit-proof")
-	public ResponseEntity<Object> getDepositProof(@PathVariable(value = "id") String id, HttpServletRequest request) {
+	public ResponseEntity<StreamingResponseBody> getDepositProof(@PathVariable(value = "id") String id, HttpServletRequest request) {
 		Optional<SurveyUnit> suOpt = surveyUnitService.findById(id);
 		if(!suOpt.isPresent()) {
 			LOGGER.error("GET deposit-proof with id {} resulting in 404", id);
@@ -190,7 +190,7 @@ public class SurveyUnitController {
 						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
 						.body(stream);
 			} catch (Exception e) {
-				return new ResponseEntity<>("ERROR_EXPORT " + Arrays.toString(e.getStackTrace()) , HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity("ERROR_EXPORT " + Arrays.toString(e.getStackTrace()) , HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			
 	    }
