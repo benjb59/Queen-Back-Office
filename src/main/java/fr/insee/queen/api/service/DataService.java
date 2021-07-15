@@ -16,6 +16,6 @@ public interface DataService extends BaseService<Data, UUID> {
 	
 	public void updateData(SurveyUnit su, JsonNode dataValue);
 
-	void updateDataImproved(String id, JsonNode dataValue);
+	void updateDataWithoutHibernate(String id, JsonNode dataValue);
     
 }

@@ -96,42 +96,19 @@ public class SurveyUnitController {
 		LOGGER.info("GET survey-unit resulting in 200");
 		return new ResponseEntity<>(resp, HttpStatus.OK);
 	}
-	
-	
-	
-	/**
-	* This method is used to update a survey-unit by id
-	*/
-	@ApiOperation(value = "Put survey-unit")
-	@PutMapping(path = "/survey-unit/{id}")
-	public ResponseEntity<Object> getSurveyUnitById(@RequestBody JsonNode surveyUnit, HttpServletRequest request, @PathVariable(value = "id") String id) {
-		Optional<SurveyUnit> su = surveyUnitService.findById(id);
-		if(!su.isPresent()) {
-			LOGGER.error("PUT survey-unit with id {} resulting in 404", id);
-			return ResponseEntity.notFound().build();
-		}
-		String userId = utilsService.getUserId(request);
-		if(!userId.equals(Constants.GUEST) && !utilsService.checkHabilitation(request, id, Constants.INTERVIEWER)) {
-			LOGGER.error("PUT survey-unit for reporting unit with id {} resulting in 403", id);
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
-		surveyUnitService.updateSurveyUnit(su.get(), surveyUnit);
-		LOGGER.info("PUT survey-units resulting in 200");
-		return ResponseEntity.ok().build();
-	}
 
 	/**
 	 * This method is used to update a survey-unit by id
 	 */
-	@ApiOperation(value = "Put survey-unit better")
-	@PutMapping(path = "/survey-unit/better/{id}")
-	public ResponseEntity<Object> putSurveyUnitImprovedById(@RequestBody JsonNode surveyUnit, HttpServletRequest request, @PathVariable(value = "id") String id) {
+	@ApiOperation(value = "Put survey-unit")
+	@PutMapping(path = "/survey-unit/{id}")
+	public ResponseEntity<Object> putSurveyUnitById(@RequestBody JsonNode surveyUnit, HttpServletRequest request, @PathVariable(value = "id") String id) {
 		String userId = utilsService.getUserId(request);
 		if(!userId.equals(Constants.GUEST) && !utilsService.checkHabilitation(request, id, Constants.INTERVIEWER)) {
 			LOGGER.error("PUT survey-unit for reporting unit with id {} resulting in 403", id);
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
-		surveyUnitService.updateSurveyUnitImproved(id, surveyUnit);
+		surveyUnitService.updateSurveyUnitWithoutHibernate(id, surveyUnit);
 		LOGGER.info("PUT survey-units resulting in 200");
 		return ResponseEntity.ok().build();
 	}
@@ -217,29 +194,13 @@ public class SurveyUnitController {
 	* @param id the id of campaign
 	* @return List of {@link String} containing nomenclature ids
 	*/
-	@ApiOperation(value = "Post survey-unit improved")
-	@PostMapping(path = "/campaign/{id}/survey-unit/better")
-	public ResponseEntity<Object> postSurveyUnitImproved(@RequestBody SurveyUnitResponseDto su, @PathVariable(value = "id") String id){
-		if(!utilsService.isDevProfile() && !utilsService.isTestProfile()) {
-			return ResponseEntity.notFound().build();
-		}
-		HttpStatus status = surveyUnitService.postSurveyUnitImproved(id, su);
-		return new ResponseEntity<>(status);
-	}
-
-	/**
-	 * This method is using to create a survey-unit
-	 *
-	 * @param id the id of campaign
-	 * @return List of {@link String} containing nomenclature ids
-	 */
 	@ApiOperation(value = "Post survey-unit")
 	@PostMapping(path = "/campaign/{id}/survey-unit")
 	public ResponseEntity<Object> postSurveyUnit(@RequestBody SurveyUnitResponseDto su, @PathVariable(value = "id") String id){
 		if(!utilsService.isDevProfile() && !utilsService.isTestProfile()) {
 			return ResponseEntity.notFound().build();
 		}
-		HttpStatus status = surveyUnitService.postSurveyUnit(id, su);
+		HttpStatus status = surveyUnitService.postSurveyUnitWithoutHibernate(id, su);
 		return new ResponseEntity<>(status);
 	}
 	

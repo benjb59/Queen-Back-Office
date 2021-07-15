@@ -66,7 +66,7 @@ public class DataServiceImpl extends AbstractService<Data, UUID> implements Data
 	}
 
 	@Override
-	public void updateDataImproved(String id, JsonNode dataValue) {
+	public void updateDataWithoutHibernate(String id, JsonNode dataValue) {
 		if(simpleApiRepository != null){
 			LOGGER.info("Method without hibernate");
 			simpleApiRepository.updateSurveyUnitData(id, dataValue);

@@ -153,7 +153,7 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 	}
 
 	@Override
-	public void updateSurveyUnitImproved(String id, JsonNode surveyUnit) {
+	public void updateSurveyUnitWithoutHibernate(String id, JsonNode surveyUnit) {
 		if(simpleApiRepository!=null){
 			LOGGER.info("Method without hibernate");
 			if(surveyUnit.get("personalization") != null) {
@@ -170,7 +170,7 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 			}
 		} else {
 			LOGGER.info("Method with hibernate");
-			// if sqlRepo is null, use classic method
+			// if simpleApiRepository is null, use classic method (handle mongoDB)
 			Optional<SurveyUnit> su = findById(id);
 			updateSurveyUnit(su.get(),surveyUnit);
 		}
@@ -324,7 +324,7 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 	}
 
 	@Override
-	public HttpStatus postSurveyUnitImproved(String id, SurveyUnitResponseDto su) {
+	public HttpStatus postSurveyUnitWithoutHibernate(String id, SurveyUnitResponseDto su) {
 		try{
 			// TODO check if campaign or questionnaire exist
 			simpleApiRepository.createSurveyUnit(id,su);

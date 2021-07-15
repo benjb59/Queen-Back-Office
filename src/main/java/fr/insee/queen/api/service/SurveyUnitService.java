@@ -33,7 +33,7 @@ public interface SurveyUnitService extends BaseService<SurveyUnit, String> {
 	List<SurveyUnit> findByCampaignId(String id);
 
 	void updateSurveyUnit(SurveyUnit su, JsonNode surveyUnit);
-	void updateSurveyUnitImproved(String id, JsonNode surveyUnit);
+	void updateSurveyUnitWithoutHibernate(String id, JsonNode surveyUnit);
 
 	public void generateDepositProof(SurveyUnit su, HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException;
@@ -42,7 +42,7 @@ public interface SurveyUnitService extends BaseService<SurveyUnit, String> {
 
 	void createSurveyUnit(SurveyUnitResponseDto su, Campaign campaign, QuestionnaireModel questionnaireModel);
 	HttpStatus postSurveyUnit(String id, SurveyUnitResponseDto su);
-	HttpStatus postSurveyUnitImproved(String id, SurveyUnitResponseDto su);
+	HttpStatus postSurveyUnitWithoutHibernate(String id, SurveyUnitResponseDto su);
 
 	Iterable<SurveyUnit> findByIds(List<String> lstSurveyUnitId);
 	
