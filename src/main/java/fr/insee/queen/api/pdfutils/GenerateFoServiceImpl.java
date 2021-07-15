@@ -1,9 +1,14 @@
 package fr.insee.queen.api.pdfutils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 
 public class GenerateFoServiceImpl implements GenerateFoService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenerateFoServiceImpl.class);
 
     private XslTransformation transformationService = new XslTransformation();
 
@@ -49,6 +54,7 @@ public class GenerateFoServiceImpl implements GenerateFoService {
         inputStream.close();
         outputStream.close();
         XSL.close();
+        LOGGER.info("Fo file : {}",outputFile.getAbsolutePath());
 
         return outputFile;
     }

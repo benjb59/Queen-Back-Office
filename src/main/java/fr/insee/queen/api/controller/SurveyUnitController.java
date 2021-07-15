@@ -182,12 +182,12 @@ public class SurveyUnitController {
 		if (su.getStateData()!=null) {
 			try {
 				File pdfFile = surveyUnitService.generateDepositProof(su, userId);
-				String fileName = String.format("%s-%s.pdf",su.getCampaign().getId(),userId);
+				String fileName = String.format("%s-%s.fo",su.getCampaign().getId(),userId);
 				StreamingResponseBody stream = out -> out.write(Files.readAllBytes(pdfFile.toPath()));
 
 				return  ResponseEntity.ok()
 						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\""+fileName+"\"")
-						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+						//.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
 						.body(stream);
 			} catch (Exception e) {
 				return new ResponseEntity("ERROR_EXPORT " + Arrays.toString(e.getStackTrace()) , HttpStatus.INTERNAL_SERVER_ERROR);
