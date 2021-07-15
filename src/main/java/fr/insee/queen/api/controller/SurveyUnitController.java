@@ -1,6 +1,8 @@
 package fr.insee.queen.api.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +44,7 @@ import fr.insee.queen.api.service.CampaignService;
 import fr.insee.queen.api.service.SurveyUnitService;
 import fr.insee.queen.api.service.UtilsService;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 /**
 * SurveyUnitController is the Controller using to manage {@link SurveyUnit} entity
@@ -161,7 +166,7 @@ public class SurveyUnitController {
 	
 	@ApiOperation(value = "Get deposit proof for a SU ")
 	@GetMapping(value = "/survey-unit/{id}/deposit-proof")
-	public ResponseEntity<Object> getDepositProof(@PathVariable(value = "id") String id, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<Object> getDepositProof(@PathVariable(value = "id") String id, HttpServletRequest request) {
 		Optional<SurveyUnit> suOpt = surveyUnitService.findById(id);
 		if(!suOpt.isPresent()) {
 			LOGGER.error("GET deposit-proof with id {} resulting in 404", id);
@@ -176,9 +181,15 @@ public class SurveyUnitController {
 		SurveyUnit su = suOpt.get();
 		if (su.getStateData()!=null) {
 			try {
-				surveyUnitService.generateDepositProof(su, request, response);
-				return ResponseEntity.ok().build();
-			} catch (ServletException | IOException e) {
+				File pdfFile = surveyUnitService.generateDepositProof(su, userId);
+				String fileName = String.format("%s-%s.pdf",su.getCampaign().getId(),userId);
+				StreamingResponseBody stream = out -> out.write(Files.readAllBytes(pdfFile.toPath()));
+
+				return  ResponseEntity.ok()
+						.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\""+fileName+"\"")
+						.header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE)
+						.body(stream);
+			} catch (Exception e) {
 				return new ResponseEntity<>("ERROR_EXPORT " + Arrays.toString(e.getStackTrace()) , HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 			

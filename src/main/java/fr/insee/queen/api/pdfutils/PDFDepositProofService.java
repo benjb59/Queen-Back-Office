@@ -1,8 +1,11 @@
 package fr.insee.queen.api.pdfutils;
 
+import org.springframework.stereotype.Service;
+
 import java.io.File;
 
 
+@Service
 public class PDFDepositProofService {
 
     private GenerateFoService generateFoService = new GenerateFoServiceImpl();

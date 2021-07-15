@@ -1,6 +1,6 @@
 package fr.insee.queen.api.service.impl;
 
-import java.io.IOException;
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -14,10 +14,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.insee.queen.api.pdfutils.PDFDepositProofService;
 import fr.insee.queen.api.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,6 @@ import fr.insee.queen.api.domain.SurveyUnit;
 import fr.insee.queen.api.dto.surveyunit.SurveyUnitDto;
 import fr.insee.queen.api.dto.surveyunit.SurveyUnitResponseDto;
 import fr.insee.queen.api.exception.BadRequestException;
-import fr.insee.queen.api.pdfutils.ExportPdf;
 import fr.insee.queen.api.service.AbstractService;
 import fr.insee.queen.api.service.CampaignService;
 import fr.insee.queen.api.service.CommentService;
@@ -58,6 +57,9 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 	private static final Logger LOGGER = LoggerFactory.getLogger(SurveyUnitServiceImpl.class);
 
 	protected final SurveyUnitRepository surveyUnitRepository;
+
+	@Autowired
+	private PDFDepositProofService pdfDepositProofService;
 
 	@Autowired
 	private StateDataService stateDataService;
@@ -224,19 +226,16 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 		}
 	}
 
-	public void generateDepositProof(SurveyUnit su, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String userId = utilsService.getUserId(request);
-		String campaignId = su.getCampaign().getId();
+	public File generateDepositProof(SurveyUnit su, String userId) throws Exception {
 		String campaignLabel = su.getCampaign().getLabel();
 		String date = "";
 		if(su.getStateData().getState().equals(StateDataType.EXTRACTED)) {
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy à HH:mm");
 			date = dateFormat.format(new Date(su.getStateData().getDate()));
 		}
-		ExportPdf exp = new ExportPdf();
 		try {
-			exp.doExport(response, date, campaignId, campaignLabel, userId);
-		} catch (ServletException | IOException e) {
+			return pdfDepositProofService.generatePdf(date,campaignLabel,userId);
+		} catch (Exception e) {
 			throw e;
 		}
 	}

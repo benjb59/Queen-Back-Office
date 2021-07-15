@@ -1,5 +1,6 @@
 package fr.insee.queen.api.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -35,8 +36,7 @@ public interface SurveyUnitService extends BaseService<SurveyUnit, String> {
 	void updateSurveyUnit(SurveyUnit su, JsonNode surveyUnit);
 	void updateSurveyUnitWithoutHibernate(String id, JsonNode surveyUnit);
 
-	public void generateDepositProof(SurveyUnit su, HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException;
+	public File generateDepositProof(SurveyUnit su, String userId) throws Exception;
 	
 	public Collection<SurveyUnitResponseDto> getSurveyUnitsByCampaign(String id, HttpServletRequest request) throws BadRequestException;
 
