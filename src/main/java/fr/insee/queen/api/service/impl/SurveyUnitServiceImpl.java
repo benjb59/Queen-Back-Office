@@ -233,11 +233,7 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 			DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy à HH:mm");
 			date = dateFormat.format(new Date(su.getStateData().getDate()));
 		}
-		try {
-			return pdfDepositProofService.generatePdf(date,campaignLabel,userId);
-		} catch (Exception e) {
-			throw e;
-		}
+		return pdfDepositProofService.generatePdf(date,campaignLabel,userId);
 	}
 
 

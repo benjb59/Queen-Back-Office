@@ -14,14 +14,14 @@ import java.io.*;
 import java.net.URI;
 
 public class FoToPDFTransformation {
-    static Logger logger = LoggerFactory.getLogger(FoToPDFTransformation.class);
+    static Logger LOGGER = LoggerFactory.getLogger(FoToPDFTransformation.class);
 
     public File transformFoToPdf(File foFile) throws Exception {
         File outFilePDF = File.createTempFile("pdf-file",".pdf");
         try{
             InputStream isXconf = Constants.getInputStreamFromPath(Constants.FOP_CONF);
             URI folderBase = FoToPDFTransformation.class.getResource("/pdf/").toURI();
-            logger.info("Uri folderBase :"+folderBase);
+            LOGGER.info("Uri folderBase :"+folderBase);
             FopFactory fopFactory = FopFactory.newInstance(folderBase,isXconf);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             OutputStream out = new BufferedOutputStream(new FileOutputStream(outFilePDF));
@@ -32,8 +32,9 @@ public class FoToPDFTransformation {
             Result res = new SAXResult(fop.getDefaultHandler());
             transformer.transform(src, res);
             out.close();
+            LOGGER.info("End of pdf transformation");
         } catch (Exception e){
-            logger.error("Error during fo to pdf transformation :"+e.getMessage());
+            LOGGER.error("Error during fo to pdf transformation :"+e.getMessage());
         }
         return outFilePDF;
     }
