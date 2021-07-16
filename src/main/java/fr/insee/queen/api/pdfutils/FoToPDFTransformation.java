@@ -20,7 +20,7 @@ public class FoToPDFTransformation {
         File outFilePDF = File.createTempFile("pdf-file",".pdf");
         try{
             InputStream isXconf = Constants.getInputStreamFromPath(Constants.FOP_CONF);
-            URI folderBase = FoToPDFTransformation.class.getResource("/pdf/").toURI();
+            URI folderBase = FoToPDFTransformation.class.getResource("/pdf/img/").toURI();
             LOGGER.info("Uri folderBase :"+folderBase);
             FopFactory fopFactory = FopFactory.newInstance(folderBase,isXconf);
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();

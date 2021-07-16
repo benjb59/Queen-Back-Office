@@ -19,8 +19,8 @@ public class PDFDepositProofService {
     public File generatePdf(String date, String campaignLabel, String idec) throws Exception {
         File foFile = generateFoService.generateFo(date, campaignLabel, idec);
         File pdfFile = foToPDFTransformation.transformFoToPdf(foFile);
-        //foFile.delete();
+        foFile.delete();
         LOGGER.info("Returning file : {}",pdfFile.getAbsolutePath());
-        return foFile;
+        return pdfFile;
     }
 }
