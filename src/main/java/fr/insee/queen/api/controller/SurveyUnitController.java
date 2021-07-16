@@ -182,7 +182,7 @@ public class SurveyUnitController {
 		if (su.getStateData()!=null) {
 			try {
 				File pdfFile = surveyUnitService.generateDepositProof(su, userId);
-				String fileName = String.format("%s-%s.fo",su.getCampaign().getId(),userId);
+				String fileName = String.format("%s-%s.pdf",su.getCampaign().getId(),userId);
 				StreamingResponseBody stream = out -> out.write(Files.readAllBytes(pdfFile.toPath()));
 
 				return  ResponseEntity.ok()
