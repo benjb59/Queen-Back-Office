@@ -1,13 +1,6 @@
 package fr.insee.queen.api.pdfutils;
 
 import org.apache.fop.apps.*;
-import org.apache.fop.apps.io.InternalResourceResolver;
-import org.apache.fop.configuration.Configuration;
-import org.apache.fop.fonts.FontManager;
-import org.apache.fop.layoutmgr.LayoutManagerMaker;
-import org.apache.xmlgraphics.image.loader.ImageManager;
-import org.apache.xmlgraphics.image.loader.impl.AbstractImageSessionContext;
-import org.apache.xmlgraphics.io.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -21,8 +14,6 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
-import java.util.Set;
 
 public class FoToPDFTransformation {
     static Logger LOGGER = LoggerFactory.getLogger(FoToPDFTransformation.class);
@@ -32,11 +23,12 @@ public class FoToPDFTransformation {
 
     public FoToPDFTransformation() {
         InputStream isXconf = Constants.getInputStreamFromPath(Constants.FOP_CONF);
-        URI folderBase = null;
+        URI folderBase;
         try {
             folderBase = FoToPDFTransformation.class.getResource("/pdf/").toURI();
             LOGGER.info("URI folderBase : "+folderBase);
-            FopFactory fopFactory = FopFactory.newInstance(folderBase, isXconf);
+            FopFactoryBuilder confBuilder = new FopConfParser(isXconf, folderBase).getFopFactoryBuilder();
+            FopFactory fopFactory = confBuilder.build();
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             this.fopFactory = fopFactory;
             this.foUserAgent = foUserAgent;
