@@ -46,5 +46,5 @@ public interface SurveyUnitService extends BaseService<SurveyUnit, String> {
 
 	Iterable<SurveyUnit> findByIds(List<String> lstSurveyUnitId);
 	
-	void deleteById(SurveyUnit su);
+	void delete(SurveyUnit su);
 }

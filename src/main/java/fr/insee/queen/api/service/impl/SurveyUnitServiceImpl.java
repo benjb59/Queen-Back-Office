@@ -369,7 +369,7 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 	}
 
 	@Override
-	public void deleteById(SurveyUnit su) {
+	public void delete(SurveyUnit su) {
 		surveyUnitRepository.delete(su);
 	}
 
