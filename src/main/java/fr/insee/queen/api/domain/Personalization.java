@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @Entity
 @Table(name="personalization")
-@Document(collection="personalization")
 public class Personalization {
 	
 	/**
@@ -39,7 +38,6 @@ public class Personalization {
 	/**
 	* The SurveyUnit associated to the personalization
 	*/
-	@DBRef
 	@OneToOne
 	@JoinColumn(name = "survey_unit_id", referencedColumnName = "id")
 	private SurveyUnit surveyUnit;

@@ -29,7 +29,6 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 	    name = "jsonb",
 	    typeClass = JsonBinaryType.class
 	)
-@Document(collection="comment")
 public class Comment {
 	/**
 	* The id of comment 
@@ -48,7 +47,6 @@ public class Comment {
 	/**
 	* The SurveyUnit associated to the comment
 	*/
-	@DBRef
 	@OneToOne
 	@JoinColumn(name = "survey_unit_id", referencedColumnName = "id")
 	private SurveyUnit surveyUnit;

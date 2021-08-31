@@ -38,24 +38,20 @@ public class SurveyUnit {
 	/**
 	* The questionnaire model associated to the reporting unit
 	*/
-	@DBRef
+	@DBRef(lazy = true)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn( name = "questionnaire_model_id", referencedColumnName = "id")
 	private QuestionnaireModel questionnaireModel;
-	
-	@DBRef
+
 	@OneToOne( mappedBy = "surveyUnit", cascade = CascadeType.ALL )
 	private Comment comment;
-	
-	@DBRef
+
 	@OneToOne( mappedBy = "surveyUnit", cascade = CascadeType.ALL )
 	private Data data;
-	
-	@DBRef
+
 	@OneToOne(mappedBy = "surveyUnit", cascade = CascadeType.ALL )
 	private StateData stateData;
-	
-	@DBRef
+
 	@OneToOne( mappedBy = "surveyUnit", cascade = CascadeType.ALL )
 	private Personalization personalization;
 	
