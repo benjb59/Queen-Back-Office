@@ -127,15 +127,10 @@ public class DataSetInjectorServiceImpl implements DataSetInjectorService {
 			StateData sd2;
 			SurveyUnit su2 = new SurveyUnit("20",camp2,qm2,null,null,null,null);
 			if(surveyUnitService.findById(su2.getId()).isPresent()) {
-				surveyUnitService.save(su2);
 				d2 = new Data(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				dataService.save(d2);
 				c2 = new Comment(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				commentService.save(c2);
 				p2 = new Personalization(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				personalizationService.save(p2);
 				sd2 = new StateData(UUID.randomUUID(),StateDataType.INIT,900000000L,"1",su2);
-				stateDataService.save(sd2);
 				su2.setData(d2);
 				su2.setStateData(sd2);
 				su2.setComment(c2);
@@ -144,15 +139,10 @@ public class DataSetInjectorServiceImpl implements DataSetInjectorService {
 			}
 			su2 = new SurveyUnit("21",camp2,qm2,null,null,null,null);
 			if(!surveyUnitService.findById(su2.getId()).isPresent()) {
-				surveyUnitService.save(su2);
 				d2 = new Data(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				dataService.save(d2);
 				c2 = new Comment(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				commentService.save(c2);
 				p2 = new Personalization(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				personalizationService.save(p2);
 				sd2 = new StateData(UUID.randomUUID(),StateDataType.INIT,900000000L,"1",su2);
-				stateDataService.save(sd2);
 				su2.setData(d2);
 				su2.setStateData(sd2);
 				su2.setComment(c2);
@@ -161,15 +151,10 @@ public class DataSetInjectorServiceImpl implements DataSetInjectorService {
 			}
 			su2 = new SurveyUnit("22",camp2,qm2,null,null,null,null);
 			if(!surveyUnitService.findById(su2.getId()).isPresent()) {
-				surveyUnitService.save(su2);
 				d2 = new Data(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				dataService.save(d2);
 				c2 = new Comment(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				commentService.save(c2);
 				p2 = new Personalization(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				personalizationService.save(p2);
 				sd2 = new StateData(UUID.randomUUID(),StateDataType.INIT,900000000L,"1",su2);
-				stateDataService.save(sd2);
 				su2.setData(d2);
 				su2.setStateData(sd2);
 				su2.setComment(c2);
@@ -178,13 +163,9 @@ public class DataSetInjectorServiceImpl implements DataSetInjectorService {
 			}
 			su2 = new SurveyUnit("23",camp2,qm2,null,null,null,null);
 			if(!surveyUnitService.findById(su2.getId()).isPresent()) {
-				surveyUnitService.save(su2);
 				d2 = new Data(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				dataService.save(d2);
 				c2 = new Comment(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				commentService.save(c2);
 				p2 = new Personalization(UUID.randomUUID(),objectMapper.createObjectNode(),su2);
-				personalizationService.save(p2);
 				su2.setData(d2);
 				su2.setComment(c2);
 				su2.setPersonalization(p2);
@@ -216,11 +197,8 @@ public class DataSetInjectorServiceImpl implements DataSetInjectorService {
 			StateData sd;
 			SurveyUnit su = new SurveyUnit("11",camp,qm,null,null,null,null);
 			if(!surveyUnitService.findById(su.getId()).isPresent()) {
-				surveyUnitService.save(su);
 				d = new Data(UUID.randomUUID(),getDataValue(su.getId()),su);
-				dataService.save(d);
 				c = new Comment(UUID.randomUUID(),getComment(),su);
-				commentService.save(c);
 				ArrayNode pValue = objectMapper.createArrayNode();
 				ObjectNode jsonObject = objectMapper.createObjectNode();
 				jsonObject.put("name", "whoAnswers1");
@@ -231,9 +209,7 @@ public class DataSetInjectorServiceImpl implements DataSetInjectorService {
 				jsonObject.put("value", "");
 				pValue.add(jsonObject);
 				p = new Personalization(UUID.randomUUID(),pValue,su);
-				personalizationService.save(p);
 				sd = new StateData(UUID.randomUUID(),StateDataType.EXTRACTED,1111111111L,CURRENT_PAGE,su);
-				stateDataService.save(sd);
 				su.setData(d);
 				su.setStateData(sd);
 				su.setComment(c);
@@ -242,32 +218,22 @@ public class DataSetInjectorServiceImpl implements DataSetInjectorService {
 			}
 			su = new SurveyUnit("12",camp,qm,null,null,null,null);
 			if(!surveyUnitService.findById(su.getId()).isPresent()) {
-				surveyUnitService.save(su);
 				d = new Data(UUID.randomUUID(),getDataValue(su.getId()),su);
-				dataService.save(d);
 				c = new Comment(UUID.randomUUID(),objectMapper.createObjectNode(),su);
-				commentService.save(c);
 				p = new Personalization(UUID.randomUUID(),objectMapper.createObjectNode(),su);
-				personalizationService.save(p);
 				sd = new StateData(UUID.randomUUID(),StateDataType.INIT,1111111111L,CURRENT_PAGE,su);
-				stateDataService.save(sd);
 				su.setData(d);
 				su.setStateData(sd);
 				su.setComment(c);
 				su.setPersonalization(p);
 				surveyUnitService.save(su);
 			}
-			su = new SurveyUnit("13",camp,qm2,null,null,null,null);
+			su = new SurveyUnit("13",camp,qm2,new Comment(),null,null,null);
 			if(!surveyUnitService.findById(su.getId()).isPresent()) {
-				surveyUnitService.save(su);
 				d = new Data(UUID.randomUUID(),getDataValue(su.getId()),su);
-				dataService.save(d);
 				c = new Comment(UUID.randomUUID(),objectMapper.createObjectNode(),su);
-				commentService.save(c);
 				p = new Personalization(UUID.randomUUID(),objectMapper.createObjectNode(),su);
-				personalizationService.save(p);
 				sd = new StateData(UUID.randomUUID(),StateDataType.INIT,1111111111L,CURRENT_PAGE,su);
-				stateDataService.save(sd);
 				su.setData(d);
 				su.setStateData(sd);
 				su.setComment(c);
@@ -276,15 +242,10 @@ public class DataSetInjectorServiceImpl implements DataSetInjectorService {
 			}
 			su = new SurveyUnit("14",camp,qm2,null,null,null,null);
 			if(!surveyUnitService.findById(su.getId()).isPresent()) {
-				surveyUnitService.save(su);
 				d = new Data(UUID.randomUUID(),getDataValue(su.getId()),su);
-				dataService.save(d);
 				c = new Comment(UUID.randomUUID(),objectMapper.createObjectNode(),su);
-				commentService.save(c);
 				p = new Personalization(UUID.randomUUID(),objectMapper.createObjectNode(),su);
-				personalizationService.save(p);
 				sd = new StateData(UUID.randomUUID(),StateDataType.INIT,1111111111L,CURRENT_PAGE,su);
-				stateDataService.save(sd);
 				su.setData(d);
 				su.setStateData(sd);
 				su.setComment(c);

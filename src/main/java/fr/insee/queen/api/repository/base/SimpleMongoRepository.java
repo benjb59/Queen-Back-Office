@@ -66,7 +66,8 @@ public class SimpleMongoRepository implements SimpleApiRepository {
 
     @Override
     public void createSurveyUnit(String campaignId, SurveyUnitResponseDto surveyUnitResponseDto) {
-        // TODO
+        SurveyUnit surveyUnit = new SurveyUnit();
+        mongoTemplate.insert(surveyUnitResponseDto,"survey_unit");
     }
 
     private void updateJsonValueOfSurveyUnit(Update update, String id) {
