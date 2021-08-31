@@ -95,18 +95,13 @@ public class CommentController {
 	@ApiOperation(value = "Update the comment by reporting unit Id ")
 	@PutMapping(path = "/survey-unit/{id}/comment")
 	public ResponseEntity<Object> setComment(@RequestBody JsonNode commentValue, @PathVariable(value = "id") String id, HttpServletRequest request) {
-		Optional<SurveyUnit> surveyUnitOptional = surveyUnitservice.findById(id);
-		if (!surveyUnitOptional.isPresent()) {
-			LOGGER.error("PUT comment for reporting unit with id {} resulting in 404", id);
-			return ResponseEntity.notFound().build();
-		}
+
 		String userId = utilsService.getUserId(request);
 		if(!userId.equals("GUEST") && !utilsService.checkHabilitation(request, id, Constants.INTERVIEWER)) {
 			LOGGER.error("PUT comment for reporting unit with id {} resulting in 403", id);
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
-		
-		commentService.updateComment(surveyUnitOptional.get(), commentValue);
+		commentService.updateCommentWithoutHibernate(id, commentValue);
 		LOGGER.info("PUT comment for reporting unit with id {} resulting in 200", id);
 		return ResponseEntity.ok().build();
 		

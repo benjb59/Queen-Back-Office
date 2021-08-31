@@ -56,7 +56,7 @@ public class PersonalizationController {
 	* This method is using to get the personalization associated to a specific reporting unit 
 	* 
 	* @param id the id of reporting unit
-	* @return {@link PersonalizationDto} the personalization associated to the reporting unit
+	* @return {@link Personalization } the personalization associated to the reporting unit
 	*/
 	@ApiOperation(value = "Get personalization by reporting unit Id ")
 	@GetMapping(path = "/survey-unit/{id}/personalization")
@@ -82,7 +82,7 @@ public class PersonalizationController {
 	/**
 	* This method is using to update the personalization associated to a specific reporting unit 
 	* 
-	* @param personalizationValue	the value to update
+	* @param personalizationValues	the value to update
 	* @param id	the id of reporting unit
 	* @return {@link HttpStatus 404} if personalization is not found, else {@link HttpStatus 200}
 	* 
@@ -90,17 +90,12 @@ public class PersonalizationController {
 	@ApiOperation(value = "Update personalization by reporting unit Id ")
 	@PutMapping(path = "/survey-unit/{id}/personalization")
 	public ResponseEntity<Object> setPersonalization(@RequestBody JsonNode personalizationValues, @PathVariable(value = "id") String id, HttpServletRequest request) {
-		Optional<SurveyUnit> surveyUnitOptional = surveyUnitService.findById(id);
-		if (!surveyUnitOptional.isPresent()) {
-			LOGGER.info("PUT personalization for reporting unit with id {} resulting in 404", id);
-			return ResponseEntity.notFound().build();
-		}
 		String userId = utilsService.getUserId(request);
 		if(!userId.equals("GUEST") && !utilsService.checkHabilitation(request, id, Constants.INTERVIEWER)) {
 			LOGGER.info("PUT personalization for reporting unit with id {} resulting in 403", id);
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
-		personalizationService.updatePersonalization(surveyUnitOptional.get(), personalizationValues);
+		personalizationService.updatePersonalizationWithoutHibernate(id, personalizationValues);
 		LOGGER.info("PUT personalization for reporting unit with id {} resulting in 200", id);
 		return ResponseEntity.ok().build();
 		

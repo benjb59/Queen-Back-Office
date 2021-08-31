@@ -42,7 +42,7 @@ public class Campaign {
 	@OneToOne( mappedBy = "campaign", cascade = CascadeType.ALL )
 	private Metadata metadata;
   
-	@DBRef
+	@DBRef(lazy = true)
 	@OneToMany(fetch = FetchType.LAZY, targetEntity=QuestionnaireModel.class, cascade = CascadeType.ALL, mappedBy="campaign" )
 	private Set<QuestionnaireModel> questionnaireModels = new HashSet<>();
 	 
