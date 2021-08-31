@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import fr.insee.queen.api.repository.SimpleApiRepository;
+import liquibase.pro.packaged.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +25,11 @@ import fr.insee.queen.api.service.StateDataService;
 public class StateDataServiceImpl extends AbstractService<StateData, UUID> implements StateDataService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StateDataServiceImpl.class);
 
-    protected final StateDataRepository stateDataRepository;
+	@Autowired
+	private StateDataRepository stateDataRepository;
 
     @Autowired
 	private SimpleApiRepository simpleApiRepository;
-
-    @Autowired
-    public StateDataServiceImpl(StateDataRepository repository) {
-        this.stateDataRepository = repository;
-    }
 
     @Override
     protected ApiRepository<StateData, UUID> getRepository() {
