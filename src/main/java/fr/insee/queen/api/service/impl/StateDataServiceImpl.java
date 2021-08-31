@@ -1,25 +1,22 @@
 package fr.insee.queen.api.service.impl;
 
-import java.util.Optional;
-import java.util.UUID;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import fr.insee.queen.api.domain.StateData;
+import fr.insee.queen.api.domain.StateDataType;
+import fr.insee.queen.api.domain.SurveyUnit;
+import fr.insee.queen.api.repository.ApiRepository;
 import fr.insee.queen.api.repository.SimpleApiRepository;
-import liquibase.pro.packaged.A;
+import fr.insee.queen.api.repository.StateDataRepository;
+import fr.insee.queen.api.service.AbstractService;
+import fr.insee.queen.api.service.StateDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
-import fr.insee.queen.api.domain.StateData;
-import fr.insee.queen.api.domain.StateDataType;
-import fr.insee.queen.api.domain.SurveyUnit;
-import fr.insee.queen.api.repository.ApiRepository;
-import fr.insee.queen.api.repository.StateDataRepository;
-import fr.insee.queen.api.service.AbstractService;
-import fr.insee.queen.api.service.StateDataService;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class StateDataServiceImpl extends AbstractService<StateData, UUID> implements StateDataService {
