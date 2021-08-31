@@ -15,5 +15,7 @@ public interface CommentService extends BaseService<Comment, UUID> {
 	void save(Comment comment);
 	
 	public void updateComment(SurveyUnit su, JsonNode commentValue);
+
+	void updateCommentWithoutHibernate(String id, JsonNode commentValue);
     
 }

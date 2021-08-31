@@ -15,5 +15,7 @@ public interface PersonalizationService extends BaseService<Personalization, UUI
 	public void updatePersonalization(SurveyUnit su, JsonNode personalizationValues);
 
 	Optional<Personalization> findBySurveyUnitId(String id);
+
+	void updatePersonalizationWithoutHibernate(String id, JsonNode personalizationValues);
     
 }
