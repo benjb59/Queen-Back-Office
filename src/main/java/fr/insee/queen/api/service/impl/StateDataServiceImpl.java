@@ -3,6 +3,7 @@ package fr.insee.queen.api.service.impl;
 import java.util.Optional;
 import java.util.UUID;
 
+import fr.insee.queen.api.repository.SimpleApiRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ public class StateDataServiceImpl extends AbstractService<StateData, UUID> imple
 	private static final Logger LOGGER = LoggerFactory.getLogger(StateDataServiceImpl.class);
 
     protected final StateDataRepository stateDataRepository;
+
+    @Autowired
+	private SimpleApiRepository simpleApiRepository;
 
     @Autowired
     public StateDataServiceImpl(StateDataRepository repository) {
@@ -59,7 +63,13 @@ public class StateDataServiceImpl extends AbstractService<StateData, UUID> imple
 		LOGGER.info("PUT data for reporting unit with id {} resulting in 200", id);
 		return ResponseEntity.ok().build();
 	}
-	
+
+	@Override
+	public ResponseEntity<Object> updateStateDataWithoutHibernate(String id, JsonNode dataValue) {
+		simpleApiRepository.updateSurveyUnitStateDate(id, dataValue);
+		return ResponseEntity.ok().build();
+	}
+
 	public void updateStateDataFromJson(StateData sd, JsonNode json) {
 		Long date = json.get("date").longValue();
 		String state = json.get("state").textValue();

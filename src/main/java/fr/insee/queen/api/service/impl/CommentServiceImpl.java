@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import fr.insee.queen.api.repository.SimpleApiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,9 @@ import fr.insee.queen.api.service.CommentService;
 public class CommentServiceImpl extends AbstractService<Comment, UUID> implements CommentService {
 
     protected final CommentRepository commentRepository;
+
+	@Autowired
+	private SimpleApiRepository simpleApiRepository;
 
     @Autowired
     public CommentServiceImpl(CommentRepository repository) {
@@ -51,5 +55,10 @@ public class CommentServiceImpl extends AbstractService<Comment, UUID> implement
 			commentOptional.get().setValue(commentValue);
 			commentRepository.save(commentOptional.get());
 		}
+	}
+
+	@Override
+	public void updateCommentWithoutHibernate(String id, JsonNode commentValue) {
+		simpleApiRepository.updateSurveyUnitComment(id, commentValue);
 	}
 }

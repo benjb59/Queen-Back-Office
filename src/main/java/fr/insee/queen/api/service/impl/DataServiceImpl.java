@@ -27,7 +27,7 @@ public class DataServiceImpl extends AbstractService<Data, UUID> implements Data
 
     protected final DataRepository dataRepository;
 
-	@Autowired(required = false)
+	@Autowired
 	private SimpleApiRepository simpleApiRepository;
 
     @Autowired
@@ -67,15 +67,8 @@ public class DataServiceImpl extends AbstractService<Data, UUID> implements Data
 
 	@Override
 	public void updateDataWithoutHibernate(String id, JsonNode dataValue) {
-		if(simpleApiRepository != null){
-			LOGGER.info("Method without hibernate");
-			simpleApiRepository.updateSurveyUnitData(id, dataValue);
-		}
-		else {
-			LOGGER.info("Method with hibernate");
-			Optional<SurveyUnit> su = surveyUnitService.findById(id);
-			updateData(su.get(),dataValue);
-		}
+		LOGGER.info("Method without hibernate");
+		simpleApiRepository.updateSurveyUnitData(id, dataValue);
 	}
 
 }

@@ -3,6 +3,7 @@ package fr.insee.queen.api.service.impl;
 import java.util.Optional;
 import java.util.UUID;
 
+import fr.insee.queen.api.repository.SimpleApiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,9 @@ import fr.insee.queen.api.service.PersonalizationService;
 public class PersonalizationServiceImpl extends AbstractService<Personalization, UUID> implements PersonalizationService {
 
     protected final PersonalizationRepository personalizationRepository;
+
+	@Autowired
+	private SimpleApiRepository simpleApiRepository;
 
     @Autowired
     public PersonalizationServiceImpl(PersonalizationRepository repository) {
@@ -38,7 +42,12 @@ public class PersonalizationServiceImpl extends AbstractService<Personalization,
 	public Optional<Personalization> findBySurveyUnitId(String id){
 		return personalizationRepository.findBySurveyUnitId(id);
 	}
-	
+
+	@Override
+	public void updatePersonalizationWithoutHibernate(String id, JsonNode personalizationValues) {
+		simpleApiRepository.updateSurveyUnitPersonalization(id, personalizationValues);
+	}
+
 	public void updatePersonalization(SurveyUnit su, JsonNode persValue) {
 		Optional<Personalization> persOptional = personalizationRepository.findBySurveyUnitId(su.getId());
 		if (!persOptional.isPresent()) {

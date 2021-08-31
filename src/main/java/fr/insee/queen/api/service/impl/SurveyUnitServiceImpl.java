@@ -79,7 +79,7 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 	@Autowired
 	private CampaignService campaignService;
 
-	@Autowired(required = false)
+	@Autowired
 	private SimpleApiRepository simpleApiRepository;
 
 	@Autowired
@@ -137,44 +137,33 @@ public class SurveyUnitServiceImpl extends AbstractService<SurveyUnit, String> i
 	public void updateSurveyUnit(SurveyUnit newSU, JsonNode surveyUnit) {
 		if(surveyUnit.get("personalization") != null) {
 			this.updatePersonalization(newSU, surveyUnit);
-			personalizationRepository.save(newSU.getPersonalization());
 		}
 		if(surveyUnit.get("comment") != null) {
 			this.updateComment(newSU, surveyUnit);
-			commentRepository.save(newSU.getComment());
 		}
 		if(surveyUnit.get("data") != null) {
 			this.updateData(newSU, surveyUnit);
-			dataRepository.save(newSU.getData());
 		}
 		if(surveyUnit.get("stateData") != null) {
 			this.updateStateData(newSU, surveyUnit);
-			stateDataRepository.save(newSU.getStateData());
 		}
 		surveyUnitRepository.save(newSU);
 	}
 
 	@Override
 	public void updateSurveyUnitWithoutHibernate(String id, JsonNode surveyUnit) {
-		if(simpleApiRepository!=null){
-			LOGGER.info("Method without hibernate");
-			if(surveyUnit.get("personalization") != null) {
-				simpleApiRepository.updateSurveyUnitPersonalization(id,surveyUnit.get("personalization"));
-			}
-			if(surveyUnit.get("comment") != null) {
-				simpleApiRepository.updateSurveyUnitComment(id,surveyUnit.get("comment"));
-			}
-			if(surveyUnit.get("data") != null) {
-				simpleApiRepository.updateSurveyUnitData(id,surveyUnit.get("data"));
-			}
-			if(surveyUnit.get("stateData") != null) {
-				simpleApiRepository.updateSurveyUnitStateDate(id,surveyUnit.get("stateData"));
-			}
-		} else {
-			LOGGER.info("Method with hibernate");
-			// if simpleApiRepository is null, use classic method (handle mongoDB)
-			Optional<SurveyUnit> su = findById(id);
-			updateSurveyUnit(su.get(),surveyUnit);
+		LOGGER.info("Method without hibernate");
+		if(surveyUnit.get("personalization") != null) {
+			simpleApiRepository.updateSurveyUnitPersonalization(id,surveyUnit.get("personalization"));
+		}
+		if(surveyUnit.get("comment") != null) {
+			simpleApiRepository.updateSurveyUnitComment(id,surveyUnit.get("comment"));
+		}
+		if(surveyUnit.get("data") != null) {
+			simpleApiRepository.updateSurveyUnitData(id, surveyUnit.get("data"));
+		}
+		if(surveyUnit.get("stateData") != null) {
+			simpleApiRepository.updateSurveyUnitStateDate(id,surveyUnit.get("stateData"));
 		}
 	}
 
