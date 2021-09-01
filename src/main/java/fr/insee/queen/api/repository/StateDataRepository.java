@@ -2,7 +2,8 @@ package fr.insee.queen.api.repository;
 
 import java.util.Optional;
 import java.util.UUID;
-
+import javax.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 import fr.insee.queen.api.domain.Data;
 import fr.insee.queen.api.domain.StateData;
 import fr.insee.queen.api.dto.data.DataDto;
