@@ -13,6 +13,8 @@ import fr.insee.queen.api.dto.data.DataDto;
 * @author Claudel Benjamin
 * 
 */
+@Transactional
+@Repository
 public interface StateDataRepository extends ApiRepository<StateData, UUID> {
 	/**
 	* This method retrieve the Data for a specific reporting_unit
