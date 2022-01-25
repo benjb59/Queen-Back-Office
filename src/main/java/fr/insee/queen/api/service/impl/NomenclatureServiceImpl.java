@@ -13,6 +13,7 @@ import fr.insee.queen.api.service.NomenclatureService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -92,10 +93,11 @@ public class NomenclatureServiceImpl extends AbstractService<Nomenclature, Strin
 	}
 
 	@Override
+	@CachePut("nomenclature")
 	public void createNomenclature(NomenclatureDto nomenclature) {
     	if(nomenclatureRepository.findById(nomenclature.getId()).isPresent()){
 			Optional<Nomenclature> nomemclatureAlreadyOnDB = nomenclatureRepository.findById(nomenclature.getId());
-			LOGGER.info("Update nomenclature" + nomenclature.getId());
+			LOGGER.info("Update nomenclature {}",nomenclature.getId());
 
 			Nomenclature nomencla = nomemclatureAlreadyOnDB.get() ;
 			nomencla.setValue(nomenclature.getValue());
@@ -103,7 +105,7 @@ public class NomenclatureServiceImpl extends AbstractService<Nomenclature, Strin
 		}
     	else{
 			Nomenclature newNomenclature = new Nomenclature(nomenclature.getId(), nomenclature.getLabel(), nomenclature.getValue());
-			LOGGER.info("Create new nomenclature" + nomenclature.getId());
+			LOGGER.info("Create new nomenclature {}",nomenclature.getId());
 			nomenclatureRepository.save(newNomenclature);
 		}
 
