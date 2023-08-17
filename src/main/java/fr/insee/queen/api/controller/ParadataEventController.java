@@ -53,6 +53,7 @@ public class ParadataEventController {
 		} else {
 			ParadataEvent paradataEvent = new ParadataEvent();
 			paradataEvent.setValue(paradataValue);
+			paradataEvent.setIdsu(paradataValue.get("idSU").textValue());
 			paradataEventService.save(paradataEvent);
 			LOGGER.info("POST ParadataEvent resulting in {}", HttpStatus.OK);
 			return new ResponseEntity<>(HttpStatus.OK);

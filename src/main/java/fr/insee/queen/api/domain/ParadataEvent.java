@@ -22,6 +22,9 @@ public class ParadataEvent {
 	@org.springframework.data.annotation.Id
 	@Column(name = "id")
 	private UUID id;
+
+	@Column(name = "idsu")
+	private String idsu;
 	
 	/**
 	* The value of data (jsonb format)
@@ -54,6 +57,18 @@ public class ParadataEvent {
 	public void setId(UUID id) {
 		this.id = id;
 	}
+	
+	
+
+	public String getIdsu() {
+	    return idsu;
+	}
+
+	public void setIdsu(String idsu) {
+	    this.idsu = idsu;
+	}
+
+
 
 	/**
 	 * @return the value
