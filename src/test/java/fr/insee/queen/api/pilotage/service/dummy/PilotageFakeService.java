@@ -28,6 +28,16 @@ public class PilotageFakeService implements PilotageService {
     @Setter
     private boolean hasEmptySurveyUnits = false;
 
+    @Getter
+    private final List<SurveyUnit> interviewerSurveyUnits = List.of(
+            new SurveyUnit(SURVEY_UNIT1_ID, "campaign-id", "questionnaire-id",
+            "[]", "{}", "{}",
+            new StateData(StateDataType.INIT, 0L, "2#3")),
+            new SurveyUnit(SURVEY_UNIT2_ID, "campaign-id", "questionnaire-id",
+            "[]", "{}", "{}",
+            new StateData(StateDataType.INIT, 0L, "2#3"))
+    );
+
     public static final String CAMPAIGN1_ID = "interviewerCampaign1";
     public static final String SURVEY_UNIT1_ID = "pilotage-s1";
     public static final String SURVEY_UNIT2_ID = "pilotage-s2";
@@ -62,14 +72,7 @@ public class PilotageFakeService implements PilotageService {
         if (this.hasEmptySurveyUnits) {
             return new ArrayList<>();
         }
-        return List.of(
-                new SurveyUnit(SURVEY_UNIT1_ID, "campaign-id", "questionnaire-id",
-                        "[]", "{}", "{}",
-                        new StateData(StateDataType.INIT, 0L, "2#3")),
-                new SurveyUnit(SURVEY_UNIT2_ID, "campaign-id", "questionnaire-id",
-                        "[]", "{}", "{}",
-                        new StateData(StateDataType.INIT, 0L, "2#3"))
-        );
+        return interviewerSurveyUnits;
     }
 
     @Override

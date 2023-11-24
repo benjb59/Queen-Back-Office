@@ -5,7 +5,8 @@ import fr.insee.queen.api.campaign.controller.dto.output.CampaignSummaryDto;
 import fr.insee.queen.api.campaign.service.CampaignService;
 import fr.insee.queen.api.campaign.service.exception.CampaignDeletionException;
 import fr.insee.queen.api.configuration.auth.AuthorityRole;
-import fr.insee.queen.api.pilotage.controller.PilotageComponent;
+import fr.insee.queen.api.pilotage.controller.habilitation.HabilitationComponent;
+import fr.insee.queen.api.pilotage.controller.interviewer.PilotageInterviewerComponent;
 import fr.insee.queen.api.pilotage.service.model.PilotageCampaign;
 import fr.insee.queen.api.web.authentication.AuthenticationHelper;
 import fr.insee.queen.api.web.validation.IdValid;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -33,7 +35,8 @@ import java.util.List;
 public class CampaignController {
     private final AuthenticationHelper authHelper;
     private final CampaignService campaignService;
-    private final PilotageComponent pilotageComponent;
+    private final HabilitationComponent habilitationComponent;
+    private final PilotageInterviewerComponent pilotageInterviewerComponent;
 
     /**
      * Retrieve all campaigns
@@ -59,12 +62,13 @@ public class CampaignController {
     @Operation(summary = "Get campaign list for the current user")
     @GetMapping(path = "/campaigns")
     @PreAuthorize(AuthorityRole.HAS_ANY_ROLE)
+    @ConditionalOnProperty(name="feature.enable.interviewer-collect", havingValue="true")
     public List<CampaignSummaryDto> getInterviewerCampaignList() {
 
         String userId = authHelper.getUserId();
         log.info("User {} need his campaigns", userId);
 
-        List<PilotageCampaign> campaigns = pilotageComponent.getInterviewerCampaigns();
+        List<PilotageCampaign> campaigns = pilotageInterviewerComponent.getInterviewerCampaigns();
         log.info("{} campaign(s) found for {}", campaigns.size(), userId);
 
         return campaigns.stream()
@@ -104,7 +108,7 @@ public class CampaignController {
         String userId = authHelper.getUserId();
         log.info("Admin {} requests deletion of campaign {}", userId, campaignId);
 
-        if (force || pilotageComponent.isClosed(campaignId)) {
+        if (force || habilitationComponent.isClosed(campaignId)) {
             campaignService.delete(campaignId);
             log.info("Campaign with id {} deleted", campaignId);
             return;

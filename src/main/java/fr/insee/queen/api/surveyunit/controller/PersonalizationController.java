@@ -2,7 +2,7 @@ package fr.insee.queen.api.surveyunit.controller;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import fr.insee.queen.api.configuration.auth.AuthorityRole;
-import fr.insee.queen.api.pilotage.controller.PilotageComponent;
+import fr.insee.queen.api.pilotage.controller.habilitation.HabilitationComponent;
 import fr.insee.queen.api.pilotage.service.PilotageRole;
 import fr.insee.queen.api.surveyunit.service.PersonalizationService;
 import fr.insee.queen.api.web.validation.IdValid;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class PersonalizationController {
     private final PersonalizationService personalizationService;
-    private final PilotageComponent pilotageComponent;
+    private final HabilitationComponent habilitationComponent;
 
     /**
      * Retrieve the personalization data of a survey unit
@@ -39,7 +39,7 @@ public class PersonalizationController {
     @PreAuthorize(AuthorityRole.HAS_ANY_ROLE)
     public String getPersonalizationBySurveyUnit(@IdValid @PathVariable(value = "id") String surveyUnitId) {
         log.info("GET personalization for reporting unit with id {}", surveyUnitId);
-        pilotageComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
+        habilitationComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
         return personalizationService.getPersonalization(surveyUnitId);
     }
 
@@ -55,7 +55,7 @@ public class PersonalizationController {
     public void setPersonalization(@IdValid @PathVariable(value = "id") String surveyUnitId,
                                    @NotNull @RequestBody ArrayNode personalizationValues) {
         log.info("PUT personalization for reporting unit with id {}", surveyUnitId);
-        pilotageComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
+        habilitationComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
         personalizationService.updatePersonalization(surveyUnitId, personalizationValues);
     }
 }

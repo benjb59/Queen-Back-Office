@@ -1,7 +1,7 @@
 package fr.insee.queen.api.utils;
 
 import fr.insee.queen.api.configuration.auth.AuthorityRoleEnum;
-import fr.insee.queen.api.pilotage.controller.PilotageApiComponent;
+import fr.insee.queen.api.pilotage.controller.habilitation.HabilitationApiComponent;
 import fr.insee.queen.api.pilotage.service.PilotageRole;
 import fr.insee.queen.api.pilotage.service.dummy.PilotageFakeService;
 import fr.insee.queen.api.pilotage.service.exception.HabilitationException;
@@ -17,12 +17,12 @@ import org.springframework.security.core.Authentication;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PilotageApiComponentTest {
+class HabilitationApiComponentTest {
     private PilotageFakeService pilotageService;
     private AuthenticationFakeHelper authHelper;
     private AuthenticatedUserTestHelper authenticatedUserTestHelper;
     private SurveyUnitFakeService surveyUnitService;
-    private PilotageApiComponent pilotageComponent;
+    private HabilitationApiComponent habilitationComponent;
 
     @BeforeEach
     void init() {
@@ -35,8 +35,8 @@ class PilotageApiComponentTest {
     @DisplayName("On check habilitations when non authenticated user throw exception")
     void testCheckHabilitations01() {
         authHelper = new AuthenticationFakeHelper(authenticatedUserTestHelper.getNotAuthenticatedUser());
-        pilotageComponent = new PilotageApiComponent(pilotageService, authHelper, surveyUnitService);
-        assertThatThrownBy(() -> pilotageComponent.checkHabilitations("11", PilotageRole.INTERVIEWER))
+        habilitationComponent = new HabilitationApiComponent(pilotageService, authHelper, surveyUnitService);
+        assertThatThrownBy(() -> habilitationComponent.checkHabilitations("11", PilotageRole.INTERVIEWER))
                 .isInstanceOf(HabilitationException.class);
     }
 
@@ -44,8 +44,8 @@ class PilotageApiComponentTest {
     @DisplayName("On check habilitations when ADMIN role do not check pilotage api")
     void testCheckHabilitations02() {
         authHelper = new AuthenticationFakeHelper(authenticatedUserTestHelper.getAuthenticatedUser(AuthorityRoleEnum.INTERVIEWER, AuthorityRoleEnum.ADMIN));
-        pilotageComponent = new PilotageApiComponent(pilotageService, authHelper, surveyUnitService);
-        pilotageComponent.checkHabilitations("11", PilotageRole.INTERVIEWER);
+        habilitationComponent = new HabilitationApiComponent(pilotageService, authHelper, surveyUnitService);
+        habilitationComponent.checkHabilitations("11", PilotageRole.INTERVIEWER);
         assertThat(pilotageService.wentThroughHasHabilitation()).isZero();
     }
 
@@ -53,8 +53,8 @@ class PilotageApiComponentTest {
     @DisplayName("On check habilitations when WEBCLIENT role do not check pilotage api")
     void testCheckHabilitations03() {
         authHelper = new AuthenticationFakeHelper(authenticatedUserTestHelper.getAuthenticatedUser(AuthorityRoleEnum.INTERVIEWER, AuthorityRoleEnum.WEBCLIENT));
-        pilotageComponent = new PilotageApiComponent(pilotageService, authHelper, surveyUnitService);
-        pilotageComponent.checkHabilitations("11", PilotageRole.INTERVIEWER);
+        habilitationComponent = new HabilitationApiComponent(pilotageService, authHelper, surveyUnitService);
+        habilitationComponent.checkHabilitations("11", PilotageRole.INTERVIEWER);
         assertThat(pilotageService.wentThroughHasHabilitation()).isZero();
     }
 
@@ -62,8 +62,8 @@ class PilotageApiComponentTest {
     @DisplayName("On check habilitations then check pilotage api")
     void testCheckHabilitations04() {
         authHelper = new AuthenticationFakeHelper(authenticatedUserTestHelper.getAuthenticatedUser(AuthorityRoleEnum.INTERVIEWER, AuthorityRoleEnum.REVIEWER));
-        pilotageComponent = new PilotageApiComponent(pilotageService, authHelper, surveyUnitService);
-        pilotageComponent.checkHabilitations("11", PilotageRole.INTERVIEWER);
+        habilitationComponent = new HabilitationApiComponent(pilotageService, authHelper, surveyUnitService);
+        habilitationComponent.checkHabilitations("11", PilotageRole.INTERVIEWER);
         assertThat(pilotageService.wentThroughHasHabilitation()).isEqualTo(1);
     }
 
@@ -74,8 +74,8 @@ class PilotageApiComponentTest {
                 AuthorityRoleEnum.INTERVIEWER, AuthorityRoleEnum.REVIEWER_ALTERNATIVE, AuthorityRoleEnum.REVIEWER);
         authHelper = new AuthenticationFakeHelper(authenticatedUser);
         pilotageService.hasHabilitation(false);
-        pilotageComponent = new PilotageApiComponent(pilotageService, authHelper, surveyUnitService);
-        assertThatThrownBy(() -> pilotageComponent.checkHabilitations("11", PilotageRole.INTERVIEWER, PilotageRole.REVIEWER))
+        habilitationComponent = new HabilitationApiComponent(pilotageService, authHelper, surveyUnitService);
+        assertThatThrownBy(() -> habilitationComponent.checkHabilitations("11", PilotageRole.INTERVIEWER, PilotageRole.REVIEWER))
                 .isInstanceOf(HabilitationException.class);
         assertThat(pilotageService.wentThroughHasHabilitation()).isEqualTo(2);
     }
@@ -87,27 +87,8 @@ class PilotageApiComponentTest {
         Authentication authenticatedUser = authenticatedUserTestHelper.getAuthenticatedUser();
         authHelper = new AuthenticationFakeHelper(authenticatedUser);
         pilotageService.isCampaignClosed(pilotageServiceResult);
-        pilotageComponent = new PilotageApiComponent(pilotageService, authHelper, surveyUnitService);
-        boolean isCampaignClosed = pilotageComponent.isClosed("écampaign-id");
+        habilitationComponent = new HabilitationApiComponent(pilotageService, authHelper, surveyUnitService);
+        boolean isCampaignClosed = habilitationComponent.isClosed("écampaign-id");
         assertThat(isCampaignClosed).isEqualTo(pilotageServiceResult);
-    }
-
-    @Test
-    @DisplayName("On retrieving survey units by campaign for current user, return survey units")
-    void testSuByCampaign() {
-        Authentication authenticatedUser = authenticatedUserTestHelper.getAuthenticatedUser(
-                AuthorityRoleEnum.INTERVIEWER, AuthorityRoleEnum.REVIEWER_ALTERNATIVE, AuthorityRoleEnum.REVIEWER);
-        authHelper = new AuthenticationFakeHelper(authenticatedUser);
-        pilotageComponent = new PilotageApiComponent(pilotageService, authHelper, surveyUnitService);
-        assertThat(pilotageComponent.getSurveyUnitsByCampaign("campaign-id")).isEqualTo(pilotageService.surveyUnitSummaries());
-    }
-
-    @Test
-    @DisplayName("On retrieving campaigns for current interviewer, return campaigns")
-    void testInterviewerCampaigns() {
-        Authentication authenticatedUser = authenticatedUserTestHelper.getAuthenticatedUser();
-        authHelper = new AuthenticationFakeHelper(authenticatedUser);
-        pilotageComponent = new PilotageApiComponent(pilotageService, authHelper, surveyUnitService);
-        assertThat(pilotageComponent.getInterviewerCampaigns()).isEqualTo(pilotageService.interviewerCampaigns());
     }
 }

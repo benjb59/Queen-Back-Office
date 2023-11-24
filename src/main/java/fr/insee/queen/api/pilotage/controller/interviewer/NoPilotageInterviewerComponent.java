@@ -1,7 +1,6 @@
-package fr.insee.queen.api.pilotage.controller;
+package fr.insee.queen.api.pilotage.controller.interviewer;
 
 import fr.insee.queen.api.campaign.service.CampaignService;
-import fr.insee.queen.api.pilotage.service.PilotageRole;
 import fr.insee.queen.api.pilotage.service.model.PilotageCampaign;
 import fr.insee.queen.api.surveyunit.service.SurveyUnitService;
 import fr.insee.queen.api.surveyunit.service.model.SurveyUnit;
@@ -12,17 +11,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@ConditionalOnExpression(value = "'${application.auth}' == 'NOAUTH' or ${feature.enable.pilotage} == false")
+@ConditionalOnExpression(value = "'${application.auth}' == 'NOAUTH' or ${feature.enable.pilotage} == false or ${feature.enable.interviewer-collect} == false")
 @RequiredArgsConstructor
 @Component
-public class NoPilotageComponent implements PilotageComponent {
+public class NoPilotageInterviewerComponent implements PilotageInterviewerComponent {
     private final SurveyUnitService surveyUnitService;
     private final CampaignService campaignService;
-
-    @Override
-    public boolean isClosed(String campaignId) {
-        return true;
-    }
 
     @Override
     public List<SurveyUnitSummary> getSurveyUnitsByCampaign(String campaignId) {
@@ -39,10 +33,5 @@ public class NoPilotageComponent implements PilotageComponent {
     @Override
     public List<SurveyUnit> getInterviewerSurveyUnits() {
         return surveyUnitService.findAllSurveyUnits();
-    }
-
-    @Override
-    public void checkHabilitations(String surveyUnitId, PilotageRole... roles) {
-        surveyUnitService.throwExceptionIfSurveyUnitNotExist(surveyUnitId);
     }
 }

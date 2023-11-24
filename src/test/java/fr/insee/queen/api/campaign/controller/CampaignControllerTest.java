@@ -3,7 +3,8 @@ package fr.insee.queen.api.campaign.controller;
 import fr.insee.queen.api.campaign.controller.dto.output.CampaignSummaryDto;
 import fr.insee.queen.api.campaign.service.dummy.CampaignFakeService;
 import fr.insee.queen.api.campaign.service.exception.CampaignDeletionException;
-import fr.insee.queen.api.pilotage.controller.dummy.PilotageFakeComponent;
+import fr.insee.queen.api.pilotage.controller.dummy.HabilitationFakeComponent;
+import fr.insee.queen.api.pilotage.controller.dummy.PilotageInterviewerFakeComponent;
 import fr.insee.queen.api.utils.AuthenticatedUserTestHelper;
 import fr.insee.queen.api.utils.dummy.AuthenticationFakeHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +19,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class CampaignControllerTest {
 
     private CampaignController campaignController;
-    private PilotageFakeComponent pilotageComponent;
+    private HabilitationFakeComponent habilitationComponent;
+    private PilotageInterviewerFakeComponent pilotageInterviewerComponent;
     private CampaignFakeService campaignService;
 
     @BeforeEach
@@ -26,8 +28,9 @@ class CampaignControllerTest {
         AuthenticatedUserTestHelper authenticatedUserTestHelper = new AuthenticatedUserTestHelper();
         AuthenticationFakeHelper authenticationHelper = new AuthenticationFakeHelper(authenticatedUserTestHelper.getAuthenticatedUser());
         campaignService = new CampaignFakeService();
-        pilotageComponent = new PilotageFakeComponent();
-        campaignController = new CampaignController(authenticationHelper, campaignService, pilotageComponent);
+        habilitationComponent = new HabilitationFakeComponent();
+        pilotageInterviewerComponent = new PilotageInterviewerFakeComponent();
+        campaignController = new CampaignController(authenticationHelper, campaignService, habilitationComponent, pilotageInterviewerComponent);
     }
 
     @Test
@@ -47,7 +50,7 @@ class CampaignControllerTest {
     @Test
     @DisplayName("On deletion, when campaign is opened, deletion is aborted")
     void testDeletionException() {
-        pilotageComponent.isCampaignClosed(false);
+        habilitationComponent.isCampaignClosed(false);
         assertThatThrownBy(() -> campaignController.deleteCampaignById(false, "11"))
                 .isInstanceOf(CampaignDeletionException.class);
     }
@@ -56,8 +59,8 @@ class CampaignControllerTest {
     @DisplayName("On retrieving interviewer campaigns, all interviewer campaigns are retrieved")
     void testGetInterviewerCampaigns01() {
         List<CampaignSummaryDto> campaigns = campaignController.getInterviewerCampaignList();
-        assertThat(pilotageComponent.wentThroughInterviewerCampaigns()).isTrue();
+        assertThat(pilotageInterviewerComponent.wentThroughInterviewerCampaigns()).isTrue();
         assertThat(campaigns).hasSize(2);
-        assertThat(campaigns.get(0).id()).isEqualTo(PilotageFakeComponent.CAMPAIGN1_ID);
+        assertThat(campaigns.get(0).id()).isEqualTo(PilotageInterviewerFakeComponent.CAMPAIGN1_ID);
     }
 }

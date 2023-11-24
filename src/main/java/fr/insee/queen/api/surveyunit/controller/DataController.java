@@ -2,7 +2,7 @@ package fr.insee.queen.api.surveyunit.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.insee.queen.api.configuration.auth.AuthorityRole;
-import fr.insee.queen.api.pilotage.controller.PilotageComponent;
+import fr.insee.queen.api.pilotage.controller.habilitation.HabilitationComponent;
 import fr.insee.queen.api.pilotage.service.PilotageRole;
 import fr.insee.queen.api.surveyunit.service.DataService;
 import fr.insee.queen.api.web.validation.IdValid;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class DataController {
     private final DataService dataService;
-    private final PilotageComponent pilotageComponent;
+    private final HabilitationComponent habilitationComponent;
 
     /**
      * Retrieve the questionnaire form data of a survey unit
@@ -39,7 +39,7 @@ public class DataController {
     @PreAuthorize(AuthorityRole.HAS_ANY_ROLE)
     public String getDataBySurveyUnit(@IdValid @PathVariable(value = "id") String surveyUnitId) {
         log.info("GET Data for reporting unit with id {}", surveyUnitId);
-        pilotageComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
+        habilitationComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
         return dataService.getData(surveyUnitId);
     }
 
@@ -56,7 +56,7 @@ public class DataController {
     public void updateData(@NotNull @RequestBody ObjectNode dataValue,
                            @IdValid @PathVariable(value = "id") String surveyUnitId) {
         log.info("PUT data for reporting unit with id {}", surveyUnitId);
-        pilotageComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
+        habilitationComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
         dataService.updateData(surveyUnitId, dataValue);
     }
 }

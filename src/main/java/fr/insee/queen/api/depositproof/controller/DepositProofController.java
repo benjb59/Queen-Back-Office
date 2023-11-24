@@ -4,7 +4,7 @@ import fr.insee.queen.api.configuration.auth.AuthorityRole;
 import fr.insee.queen.api.depositproof.service.DepositProofService;
 import fr.insee.queen.api.depositproof.service.exception.DepositProofException;
 import fr.insee.queen.api.depositproof.service.model.PdfDepositProof;
-import fr.insee.queen.api.pilotage.controller.PilotageComponent;
+import fr.insee.queen.api.pilotage.controller.habilitation.HabilitationComponent;
 import fr.insee.queen.api.pilotage.service.PilotageRole;
 import fr.insee.queen.api.web.authentication.AuthenticationHelper;
 import fr.insee.queen.api.web.validation.IdValid;
@@ -35,7 +35,7 @@ import java.nio.file.Files;
 @Validated
 public class DepositProofController {
     private final DepositProofService depositProofService;
-    private final PilotageComponent pilotageComponent;
+    private final HabilitationComponent habilitationComponent;
     private final AuthenticationHelper authHelper;
 
     /**
@@ -50,7 +50,7 @@ public class DepositProofController {
     public void generateDepositProof(@IdValid @PathVariable(value = "id") String surveyUnitId,
                                      HttpServletResponse response) {
         log.info("GET deposit-proof with survey unit id {}", surveyUnitId);
-        pilotageComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER, PilotageRole.REVIEWER);
+        habilitationComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER, PilotageRole.REVIEWER);
 
         String username = authHelper.getUserId();
         PdfDepositProof depositProof = depositProofService.generateDepositProof(username, surveyUnitId);

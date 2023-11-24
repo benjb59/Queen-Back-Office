@@ -1,8 +1,7 @@
 package fr.insee.queen.api.pilotage.controller.dummy;
 
 import fr.insee.queen.api.depositproof.service.model.StateDataType;
-import fr.insee.queen.api.pilotage.controller.PilotageComponent;
-import fr.insee.queen.api.pilotage.service.PilotageRole;
+import fr.insee.queen.api.pilotage.controller.interviewer.PilotageInterviewerComponent;
 import fr.insee.queen.api.pilotage.service.model.PilotageCampaign;
 import fr.insee.queen.api.surveyunit.service.model.StateData;
 import fr.insee.queen.api.surveyunit.service.model.SurveyUnit;
@@ -13,11 +12,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PilotageFakeComponent implements PilotageComponent {
-    @Getter
-    private boolean checked = false;
-    @Setter
-    private boolean isCampaignClosed = true;
+public class PilotageInterviewerFakeComponent implements PilotageInterviewerComponent {
     @Getter
     private boolean wentThroughInterviewerCampaigns = false;
     @Setter
@@ -26,16 +21,6 @@ public class PilotageFakeComponent implements PilotageComponent {
     public static final String CAMPAIGN1_ID = "interviewerCampaign1";
     public static final String SURVEY_UNIT1_ID = "pilotage-component-s1";
     public static final String SURVEY_UNIT2_ID = "pilotage-component-s2";
-
-    @Override
-    public void checkHabilitations(String surveyUnitId, PilotageRole... roles) {
-        checked = true;
-    }
-
-    @Override
-    public boolean isClosed(String campaignId) {
-        return this.isCampaignClosed;
-    }
 
     @Override
     public List<SurveyUnitSummary> getSurveyUnitsByCampaign(String campaignId) {

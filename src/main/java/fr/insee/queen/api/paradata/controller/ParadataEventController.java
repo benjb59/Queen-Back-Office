@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.insee.queen.api.configuration.auth.AuthorityRole;
 import fr.insee.queen.api.paradata.service.ParadataEventService;
-import fr.insee.queen.api.pilotage.controller.PilotageComponent;
+import fr.insee.queen.api.pilotage.controller.habilitation.HabilitationComponent;
 import fr.insee.queen.api.pilotage.service.PilotageRole;
 import fr.insee.queen.api.web.exception.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class ParadataEventController {
     private final ParadataEventService paradataEventService;
-    private final PilotageComponent pilotageComponent;
+    private final HabilitationComponent habilitationComponent;
 
     /**
      * Create a paradata event for a survey unit
@@ -53,7 +53,7 @@ public class ParadataEventController {
         }
 
         String surveyUnitId = surveyUnitNode.textValue();
-        pilotageComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
+        habilitationComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
         paradataEventService.createParadataEvent(surveyUnitId, paradataValue.toString());
     }
 }

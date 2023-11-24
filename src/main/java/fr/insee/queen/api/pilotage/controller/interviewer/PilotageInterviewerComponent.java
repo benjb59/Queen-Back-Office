@@ -1,28 +1,12 @@
-package fr.insee.queen.api.pilotage.controller;
+package fr.insee.queen.api.pilotage.controller.interviewer;
 
-import fr.insee.queen.api.pilotage.service.PilotageRole;
 import fr.insee.queen.api.pilotage.service.model.PilotageCampaign;
 import fr.insee.queen.api.surveyunit.service.model.SurveyUnit;
 import fr.insee.queen.api.surveyunit.service.model.SurveyUnitSummary;
 
 import java.util.List;
 
-public interface PilotageComponent {
-    /**
-     * Check if the current user has defined roles for a survey unit
-     *
-     * @param surveyUnitId the survey unit the user want to access
-     * @param roles        the roles the current user should have to access the survey unit
-     */
-    void checkHabilitations(String surveyUnitId, PilotageRole... roles);
-
-    /**
-     * Check if a campaign is closed
-     * @param campaignId campaign id
-     * @return true if campaign is closed, false otherwise
-     */
-    boolean isClosed(String campaignId);
-
+public interface PilotageInterviewerComponent {
     /**
      * Retrieve survey unit list of a campaign
      * @param campaignId campaign id
@@ -42,3 +26,4 @@ public interface PilotageComponent {
      */
     List<SurveyUnit> getInterviewerSurveyUnits();
 }
+

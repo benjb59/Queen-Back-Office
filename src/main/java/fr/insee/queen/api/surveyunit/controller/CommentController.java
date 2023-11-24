@@ -2,7 +2,7 @@ package fr.insee.queen.api.surveyunit.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.insee.queen.api.configuration.auth.AuthorityRole;
-import fr.insee.queen.api.pilotage.controller.PilotageComponent;
+import fr.insee.queen.api.pilotage.controller.habilitation.HabilitationComponent;
 import fr.insee.queen.api.pilotage.service.PilotageRole;
 import fr.insee.queen.api.surveyunit.service.CommentService;
 import fr.insee.queen.api.web.validation.IdValid;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
     private final CommentService commentService;
-    private final PilotageComponent pilotageComponent;
+    private final HabilitationComponent habilitationComponent;
 
     /**
      * Retrieve the comment linked to the survey unit
@@ -43,7 +43,7 @@ public class CommentController {
     @PreAuthorize(AuthorityRole.HAS_ANY_ROLE)
     public String getCommentBySurveyUnit(@IdValid @PathVariable(value = "id") String surveyUnitId) {
         log.info("GET comment for reporting unit with id {}", surveyUnitId);
-        pilotageComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
+        habilitationComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
         return commentService.getComment(surveyUnitId);
     }
 
@@ -59,7 +59,7 @@ public class CommentController {
     public void setComment(@NotNull @RequestBody ObjectNode commentValue,
                            @IdValid @PathVariable(value = "id") String surveyUnitId) {
         log.info("PUT comment for reporting unit with id {}", surveyUnitId);
-        pilotageComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
+        habilitationComponent.checkHabilitations(surveyUnitId, PilotageRole.INTERVIEWER);
         commentService.updateComment(surveyUnitId, commentValue);
     }
 }

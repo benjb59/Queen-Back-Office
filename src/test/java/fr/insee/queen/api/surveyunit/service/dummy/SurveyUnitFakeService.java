@@ -29,6 +29,12 @@ public class SurveyUnitFakeService implements SurveyUnitService {
             new SurveyUnitSummary("survey-unit3", "questionnaire-id", "campaign-id")
     );
 
+    @Getter
+    private final List<SurveyUnit> allSurveyUnits = List.of(
+            new SurveyUnit(SURVEY_UNIT1_ID, "campaign-id", "questionnaire-id", null, null, null, null),
+            new SurveyUnit(SURVEY_UNIT2_ID, "campaign-id", "questionnaire-id", null, null, null, null)
+    );
+
     @Override
     public void throwExceptionIfSurveyUnitNotExist(String surveyUnitId) {
         checkSurveyUnitExist = true;
@@ -105,9 +111,6 @@ public class SurveyUnitFakeService implements SurveyUnitService {
 
     @Override
     public List<SurveyUnit> findAllSurveyUnits() {
-        return List.of(
-                new SurveyUnit(SURVEY_UNIT1_ID, "campaign-id", "questionnaire-id", null, null, null, null),
-                new SurveyUnit(SURVEY_UNIT2_ID, "campaign-id", "questionnaire-id", null, null, null, null)
-        );
+        return allSurveyUnits;
     }
 }

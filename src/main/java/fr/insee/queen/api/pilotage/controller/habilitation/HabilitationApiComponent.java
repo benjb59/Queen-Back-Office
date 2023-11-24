@@ -1,11 +1,9 @@
-package fr.insee.queen.api.pilotage.controller;
+package fr.insee.queen.api.pilotage.controller.habilitation;
 
 import fr.insee.queen.api.pilotage.service.PilotageRole;
 import fr.insee.queen.api.pilotage.service.PilotageService;
 import fr.insee.queen.api.pilotage.service.exception.HabilitationException;
-import fr.insee.queen.api.pilotage.service.model.PilotageCampaign;
 import fr.insee.queen.api.surveyunit.service.SurveyUnitService;
-import fr.insee.queen.api.surveyunit.service.model.SurveyUnit;
 import fr.insee.queen.api.surveyunit.service.model.SurveyUnitSummary;
 import fr.insee.queen.api.web.authentication.AuthenticationHelper;
 import lombok.AllArgsConstructor;
@@ -17,11 +15,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@ConditionalOnExpression(value = "'${application.auth}' == 'OIDC' and ${feature.enable.pilotage} != false")
+@ConditionalOnExpression(value = "'${application.auth}' == 'OIDC' and ${feature.enable.pilotage} == true")
 @Component
 @AllArgsConstructor
 @Slf4j
-public class PilotageApiComponent implements PilotageComponent {
+public class HabilitationApiComponent implements HabilitationComponent {
     private final PilotageService pilotageService;
     private final AuthenticationHelper authHelper;
     private final SurveyUnitService surveyUnitService;
@@ -30,30 +28,6 @@ public class PilotageApiComponent implements PilotageComponent {
     public boolean isClosed(String campaignId) {
         String userToken = authHelper.getUserToken();
         return pilotageService.isClosed(campaignId, userToken);
-    }
-
-    @Override
-    public List<SurveyUnitSummary> getSurveyUnitsByCampaign(String campaignId) {
-        String authToken = authHelper.getUserToken();
-        return pilotageService.getSurveyUnitsByCampaign(campaignId, authToken);
-    }
-
-    @Override
-    public List<PilotageCampaign> getInterviewerCampaigns() {
-        String userId = authHelper.getUserId();
-        log.info("User {} need his campaigns", userId);
-
-        String authToken = authHelper.getUserToken();
-        List<PilotageCampaign> campaigns = pilotageService.getInterviewerCampaigns(authToken);
-        log.info("{} campaign(s) found for {}", campaigns.size(), userId);
-
-        return campaigns;
-    }
-
-    @Override
-    public List<SurveyUnit> getInterviewerSurveyUnits() {
-        String authToken = authHelper.getUserToken();
-        return pilotageService.getInterviewerSurveyUnits(authToken);
     }
 
     @Override
