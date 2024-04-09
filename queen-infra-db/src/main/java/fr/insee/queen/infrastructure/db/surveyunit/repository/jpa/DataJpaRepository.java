@@ -1,5 +1,6 @@
 package fr.insee.queen.infrastructure.db.surveyunit.repository.jpa;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fr.insee.queen.infrastructure.db.surveyunit.entity.DataDB;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -39,19 +40,18 @@ public interface DataJpaRepository extends JpaRepository<DataDB, UUID> {
     @Transactional
     @Modifying
     @Query("update DataDB d set d.value = :data where d.surveyUnit.id = :surveyUnitId")
-    int updateData(String surveyUnitId, String data);
+    int updateData(String surveyUnitId, ObjectNode data);
 
     /**
      * Update data for a survey unit
      *
      * @param surveyUnitId survey unit id
      * @param collectedUpdateData partial collected data to set on current collected data
-     * @return number of updated rows
      */
     @Transactional
     @Modifying
     @Query(value = """
-        update data 
+        update data
         set value=jsonb_set(cast(value as jsonb), '{COLLECTED}', aggregate_query.updated_collected_data)
         from(
             select value->'COLLECTED' || cast(:collectedUpdateData as jsonb) as updated_collected_data
@@ -59,7 +59,7 @@ public interface DataJpaRepository extends JpaRepository<DataDB, UUID> {
         ) as aggregate_query
         where survey_unit_id=:surveyUnitId
     """, nativeQuery = true)
-    void updateCollectedData(String surveyUnitId, String collectedUpdateData);
+    void updateCollectedData(String surveyUnitId, ObjectNode collectedUpdateData);
 
     /**
      * Find the data of a survey unit
@@ -68,7 +68,7 @@ public interface DataJpaRepository extends JpaRepository<DataDB, UUID> {
      * @return an optional of the data (json format)
      */
     @Query("select s.data.value from SurveyUnitDB s where s.id=:surveyUnitId")
-    Optional<String> findData(String surveyUnitId);
+    Optional<ObjectNode> findData(String surveyUnitId);
 
     /**
      * Find the data of a survey unit
@@ -77,7 +77,7 @@ public interface DataJpaRepository extends JpaRepository<DataDB, UUID> {
      * @return an optional of the data (json format)
      */
     @Query("select s.data.value from SurveyUnitDB s where s.id=:surveyUnitId")
-    String getData(String surveyUnitId);
+    ObjectNode getData(String surveyUnitId);
 
     /**
      * Delete data of a survey unit

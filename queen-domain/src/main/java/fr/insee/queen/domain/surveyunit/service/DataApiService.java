@@ -15,15 +15,15 @@ public class DataApiService implements DataService {
     private final SurveyUnitRepository surveyUnitRepository;
 
     @Override
-    public String getData(String surveyUnitId) {
+    public ObjectNode getData(String surveyUnitId) {
         return surveyUnitRepository
                 .findData(surveyUnitId)
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Data not found for survey unit %s", surveyUnitId)));
     }
 
     @Override
-    public void saveData(String surveyUnitId, JsonNode dataValue) {
-        surveyUnitRepository.saveData(surveyUnitId, dataValue.toString());
+    public void saveData(String surveyUnitId, ObjectNode dataValue) {
+        surveyUnitRepository.saveData(surveyUnitId, dataValue);
     }
 
     @Override
